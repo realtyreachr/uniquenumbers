@@ -8,8 +8,8 @@ app.use(bodyParser.json());
 
 // CONFIGURATION
 const VERIFY_TOKEN = "RealtyReach@2025";   
-const WHATSAPP_TOKEN = "YOUR_WHATSAPP_TOKEN";  
-const PHONE_NUMBER_ID = "YOUR_PHONE_NUMBER_ID"; 
+const WHATSAPP_TOKEN = "EAAPrwJa32VMBPZAzMcxoSrPKx3Xn339HUmQWxDP46ZAvRc6JZAMxYlLnPCs6k8eRUdqKindF8eANizsoLLlIdGVxG2F701DZBbbskUGVTf7GTjmL4FVExFXc5PvhEpOVpdi0sfYV0930xsbxjMc6OP7KSiuzp6JF4o0ZBsBmJUZBr9jtG1aQcCS4oPzNZAFeFxIIqZCnqFjOjZCBUfINUROsN7aBY4hw2iUyUxf0yvC6daQZDZD";  
+const PHONE_NUMBER_ID = "782266531631708"; 
 const TEMPLATE_SHEET_ID = "YOUR_MASTER_SHEET_ID"; 
 const SERVICE_ACCOUNT_FILE = "service_account.json"; 
 
@@ -90,4 +90,5 @@ app.post("/webhook", async (req, res) => {
 // START SERVER
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
