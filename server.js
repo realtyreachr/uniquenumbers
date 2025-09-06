@@ -7,7 +7,7 @@ const app = express();
 app.use(bodyParser.json());
 
 // CONFIGURATION
-const VERIFY_TOKEN = "mysecret123";   
+const VERIFY_TOKEN = "RealtyReach@2025";   
 const WHATSAPP_TOKEN = "YOUR_WHATSAPP_TOKEN";  
 const PHONE_NUMBER_ID = "YOUR_PHONE_NUMBER_ID"; 
 const TEMPLATE_SHEET_ID = "YOUR_MASTER_SHEET_ID"; 
@@ -90,3 +90,4 @@ app.post("/webhook", async (req, res) => {
 // START SERVER
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
