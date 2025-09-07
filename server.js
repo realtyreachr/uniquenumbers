@@ -85,7 +85,7 @@ app.post("/webhook", async (req, res) => {
 
       // Example: create new sheet and send WhatsApp reply
      // const sheetLink = await createNewSheet(from);
-      await sendWhatsAppReply(from, `Hi! Your lead sheet is ready: ${sheetLink}`);
+     // await sendWhatsAppReply(from, `Hi! Your lead sheet is ready: ${sheetLink}`);
     }
   }
 
@@ -95,6 +95,7 @@ app.post("/webhook", async (req, res) => {
 // START SERVER
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
 
