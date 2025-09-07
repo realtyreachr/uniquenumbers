@@ -56,15 +56,23 @@ async function sendWhatsAppReply(toNumber, message) {
   });
 }
 
-// WEBHOOK
+const express = require("express");
+const bodyParser = require("body-parser");
+
+const app = express();
+app.use(bodyParser.json());
+
+// ✅ Webhook Verify (required by Meta)
 app.get("/webhook", (req, res) => {
-  const mode = req.query["hub.mode"];
-  const token = req.query["hub.verify_token"];
-  const challenge = req.query["hub.challenge"];
+  const verify_token = "RealtyReach@2025"; // tumne jo Meta dashboard me dala tha
+
+  let mode = req.query["hub.mode"];
+  let token = req.query["hub.verify_token"];
+  let challenge = req.query["hub.challenge"];
 
   if (mode && token) {
-    if (mode === "subscribe" && token === VERIFY_TOKEN) {
-      console.log("WEBHOOK_VERIFIED");
+    if (mode === "subscribe" && token === verify_token) {
+      console.log("Webhook verified!");
       res.status(200).send(challenge);
     } else {
       res.sendStatus(403);
@@ -72,27 +80,37 @@ app.get("/webhook", (req, res) => {
   }
 });
 
-app.post("/webhook", async (req, res) => {
-  const body = req.body;
-  if (body.object) {
-    const entry = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
-    if (entry && entry.from) {
-      const from = entry.from;
-      const sheetLink = await createNewSheet(from);
-      await sendWhatsAppReply(
-        from,
-        `Hello! Here’s your fresh Google Sheet link: ${sheetLink}`
-      );
+// ✅ Webhook Receiver (messages aayenge yahan)
+app.post("/webhook", (req, res) => {
+  console.log("Incoming Webhook: ", JSON.stringify(req.body, null, 2));
+
+  // Sample message data extract karna
+  if (req.body.entry) {
+    let changes = req.body.entry[0].changes;
+    if (changes && changes[0].value && changes[0].value.messages) {
+      let msg = changes[0].value.messages[0];
+      let from = msg.from; // sender ka number
+      let text = msg.text?.body; // text message body
+
+      console.log(`📩 New message from ${from}: ${text}`);
     }
-    res.sendStatus(200);
-  } else {
-    res.sendStatus(404);
   }
+
+  // Always respond with 200 OK
+  res.sendStatus(200);
 });
+
+// ✅ Port binding (Render ke liye process.env.PORT)
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
 
 // START SERVER
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
 
