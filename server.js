@@ -8,9 +8,9 @@ app.use(bodyParser.json());
 
 // CONFIGURATION
 const VERIFY_TOKEN = "RealtyReach@2025";   
-const WHATSAPP_TOKEN = "EAAPrwJa32VMBPdGkspXMFAF7PY0ewti2ACOIOiD176cS74dUMfpZASTs1FzDK1exDCXLvpppYYBotfEbkKEm2LSIHbNmcEDyzshT6nCW7pTZAneI0cA4UnSKx94SSZBQorZCCIZAn1jMaY7q1vLOCaI8ZCtuA3Cvqq32NnZAZADJqxW9iIwcIizAmEGHeNX1cRZCTBcelxXklHaUDJA5GQsg1YOAvy7dCBfByJoFj4GpurAZDZD";  
-const PHONE_NUMBER_ID = "782266531631708"; 
-const TEMPLATE_SHEET_ID = "https://docs.google.com/spreadsheets/d/103pEGY7WjmIVDaV38-24_3wcMXFkcisTaf-41aTTm6g/edit"; 
+const WHATSAPP_TOKEN = "EAAPrwJa32VMBPdGkspXMFAF7PY0ewti2ACOIOiD176cS74dUMfpZASTs1FzDK1exDCXLvpppYYBotfEbkKEm2LSIHbNmcEDyzshT6nCW7pTZAneI0cA4UnSKx94SSZBQorZCCIZAn1jMaY7q1vLOCaI8ZCtuA3Cvqq32NnZAZADJqxW9iIwcIizAmEGHeNX1cRZCTBcelxXklHaUDJA5GQsg1YOAvy7dCBfByJoFj4GpurAZDZD";   
+const PHONE_NUMBER_ID = "782266531631708";  
+const TEMPLATE_SHEET_ID = "https://docs.google.com/spreadsheets/d/103pEGY7WjmIVDaV38-24_3wcMXFkcisTaf-41aTTm6g/edit";  
 const SERVICE_ACCOUNT_FILE = "service_account.json"; 
 
 // Google API Auth
@@ -38,7 +38,7 @@ async function createNewSheet(userNumber) {
 }
 
 async function sendWhatsAppReply(toNumber, message) {
-  const url = `https://graph.facebook.com/v23.0/782266531631708/messages`;
+  const url = `https://graph.facebook.com/v23.0/782266531631708/messages`; 
   const data = {
     messaging_product: "whatsapp",
     to: toNumber,
@@ -55,34 +55,23 @@ async function sendWhatsAppReply(toNumber, message) {
     body: JSON.stringify(data),
   });
 }
-// Remove any `require()` statements
-import express from "express";
-import bodyParser from "body-parser";
-import fetch from "node-fetch"; // agar WhatsApp API call use karoge
-
-const app = express();
-app.use(bodyParser.json());
 
 // Webhook verification
 app.get("/webhook", (req, res) => {
-  const verify_token = "my_verify_token";
-
   let mode = req.query["hub.mode"];
   let token = req.query["hub.verify_token"];
   let challenge = req.query["hub.challenge"];
 
-  if (mode && token) {
-    if (mode === "subscribe" && token === verify_token) {
-      console.log("Webhook verified!");
-      res.status(200).send(challenge);
-    } else {
-      res.sendStatus(403);
-    }
+  if (mode && token && mode === "subscribe" && token === VERIFY_TOKEN) {
+    console.log("Webhook verified!");
+    res.status(200).send(challenge);
+  } else {
+    res.sendStatus(403);
   }
 });
 
 // Webhook receiver
-app.post("/webhook", (req, res) => {
+app.post("/webhook", async (req, res) => {
   console.log("Incoming Webhook: ", JSON.stringify(req.body, null, 2));
 
   if (req.body.entry) {
@@ -93,31 +82,16 @@ app.post("/webhook", (req, res) => {
       let text = msg.text?.body;
 
       console.log(`📩 New message from ${from}: ${text}`);
+
+      // Example: create new sheet and send WhatsApp reply
+      const sheetLink = await createNewSheet(from);
+      await sendWhatsAppReply(from, `Hi! Your lead sheet is ready: ${sheetLink}`);
     }
   }
 
   res.sendStatus(200);
 });
 
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-
-
 // START SERVER
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
-
-
-
-
-
-
-
-
-
-
