@@ -11,7 +11,7 @@ const VERIFY_TOKEN = "RealtyReach@2025";
 const WHATSAPP_TOKEN = "EAAPrwJa32VMBPdGkspXMFAF7PY0ewti2ACOIOiD176cS74dUMfpZASTs1FzDK1exDCXLvpppYYBotfEbkKEm2LSIHbNmcEDyzshT6nCW7pTZAneI0cA4UnSKx94SSZBQorZCCIZAn1jMaY7q1vLOCaI8ZCtuA3Cvqq32NnZAZADJqxW9iIwcIizAmEGHeNX1cRZCTBcelxXklHaUDJA5GQsg1YOAvy7dCBfByJoFj4GpurAZDZD";   
 const PHONE_NUMBER_ID = "782266531631708";  
 const TEMPLATE_SHEET_ID = "103pEGY7WjmIVDaV38-24_3wcMXFkcisTaf-41aTTm6g";  
-const SERVICE_ACCOUNT_FILE = "./service_account.json"; 
+const SERVICE_ACCOUNT_FILE = "./service_account.json";
 
 // Google API Auth
 const auth = new google.auth.GoogleAuth({
@@ -95,5 +95,6 @@ app.post("/webhook", async (req, res) => {
 // START SERVER
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
