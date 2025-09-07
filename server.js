@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 
 // CONFIGURATION
 const VERIFY_TOKEN = "RealtyReach@2025";   
-const WHATSAPP_TOKEN = "EAAPrwJa32VMBPZAzMcxoSrPKx3Xn339HUmQWxDP46ZAvRc6JZAMxYlLnPCs6k8eRUdqKindF8eANizsoLLlIdGVxG2F701DZBbbskUGVTf7GTjmL4FVExFXc5PvhEpOVpdi0sfYV0930xsbxjMc6OP7KSiuzp6JF4o0ZBsBmJUZBr9jtG1aQcCS4oPzNZAFeFxIIqZCnqFjOjZCBUfINUROsN7aBY4hw2iUyUxf0yvC6daQZDZD";  
+const WHATSAPP_TOKEN = "EAAPrwJa32VMBPdGkspXMFAF7PY0ewti2ACOIOiD176cS74dUMfpZASTs1FzDK1exDCXLvpppYYBotfEbkKEm2LSIHbNmcEDyzshT6nCW7pTZAneI0cA4UnSKx94SSZBQorZCCIZAn1jMaY7q1vLOCaI8ZCtuA3Cvqq32NnZAZADJqxW9iIwcIizAmEGHeNX1cRZCTBcelxXklHaUDJA5GQsg1YOAvy7dCBfByJoFj4GpurAZDZD";  
 const PHONE_NUMBER_ID = "782266531631708"; 
 const TEMPLATE_SHEET_ID = "https://docs.google.com/spreadsheets/d/103pEGY7WjmIVDaV38-24_3wcMXFkcisTaf-41aTTm6g/edit"; 
 const SERVICE_ACCOUNT_FILE = "service_account.json"; 
@@ -90,6 +90,7 @@ app.post("/webhook", async (req, res) => {
 // START SERVER
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
 
