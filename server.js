@@ -55,15 +55,17 @@ async function sendWhatsAppReply(toNumber, message) {
     body: JSON.stringify(data),
   });
 }
+// Remove any `require()` statements
 import express from "express";
 import bodyParser from "body-parser";
+import fetch from "node-fetch"; // agar WhatsApp API call use karoge
 
 const app = express();
 app.use(bodyParser.json());
 
-// ✅ Webhook Verify (required by Meta)
+// Webhook verification
 app.get("/webhook", (req, res) => {
-  const verify_token = "RealtyReach@2025"; // tumne jo Meta dashboard me dala tha
+  const verify_token = "my_verify_token";
 
   let mode = req.query["hub.mode"];
   let token = req.query["hub.verify_token"];
@@ -79,36 +81,35 @@ app.get("/webhook", (req, res) => {
   }
 });
 
-// ✅ Webhook Receiver (messages aayenge yahan)
+// Webhook receiver
 app.post("/webhook", (req, res) => {
   console.log("Incoming Webhook: ", JSON.stringify(req.body, null, 2));
 
-  // Sample message data extract karna
   if (req.body.entry) {
     let changes = req.body.entry[0].changes;
     if (changes && changes[0].value && changes[0].value.messages) {
       let msg = changes[0].value.messages[0];
-      let from = msg.from; // sender ka number
-      let text = msg.text?.body; // text message body
+      let from = msg.from;
+      let text = msg.text?.body;
 
       console.log(`📩 New message from ${from}: ${text}`);
     }
   }
 
-  // Always respond with 200 OK
   res.sendStatus(200);
 });
 
-// ✅ Port binding (Render ke liye process.env.PORT)
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
 
+
 // START SERVER
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
 
