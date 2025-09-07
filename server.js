@@ -8,28 +8,24 @@ app.use(bodyParser.json());
 
 // ================== CONFIGURATION ==================
 const VERIFY_TOKEN = "RealtyReach@2025";
-const WHATSAPP_TOKEN = "EAAPrwJa32VMBPdGkspXMFAF7PY0ewti2ACOIOiD176cS74dUMfpZASTs1FzDK1exDCXLvpppYYBotfEbkKEm2LSIHbNmcEDyzshT6nCW7pTZAneI0cA4UnSKx94SSZBQorZCCIZAn1jMaY7q1vLOCaI8ZCtuA3Cvqq32NnZAZADJqxW9iIwcIizAmEGHeNX1cRZCTBcelxXklHaUDJA5GQsg1YOAvy7dCBfByJoFj4GpurAZDZD";
-const PHONE_NUMBER_ID = "782266531631708";
-const TEMPLATE_SHEET_ID = "103pEGY7WjmIVDaV38-24_3wcMXFkcisTaf-41aTTm6g";
+const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
+const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID;
 
 // ================ GOOGLE AUTH INIT ================
 let googleAuth;
 
 if (process.env.GOOGLE_SERVICE_ACCOUNT_BASE64) {
-  const json = Buffer.from(
-    process.env.GOOGLE_SERVICE_ACCOUNT_BASE64,
-    "base64"
-  ).toString("utf-8");
-
+  const json = Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_BASE64, "base64").toString("utf-8");
   googleAuth = new google.auth.GoogleAuth({
     credentials: JSON.parse(json),
-    scopes: ["https://www.googleapis.com/auth/drive"],
+    scopes: ["https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/spreadsheets"],
   });
 } else {
-  throw new Error("❌ Missing GOOGLE_SERVICE_ACCOUNT_BASE64 environment variable");
+  throw new Error("Missing GOOGLE_SERVICE_ACCOUNT_BASE64 environment variable");
 }
 
 const drive = google.drive({ version: "v3", auth: googleAuth });
+const sheets = google.sheets({ version: "v4", auth: googleAuth });
 
 // Test auth on startup
 (async () => {
@@ -37,7 +33,7 @@ const drive = google.drive({ version: "v3", auth: googleAuth });
     await googleAuth.getClient();
     console.log("✅ Google Drive Authenticated");
   } catch (error) {
-    console.error("❌ Google Drive Auth Error:", error.message);
+    console.error("❌ Google Drive Auth Error:", error);
     process.exit(1);
   }
 })();
@@ -45,21 +41,22 @@ const drive = google.drive({ version: "v3", auth: googleAuth });
 // ================== FUNCTIONS ====================
 async function createNewSheet(userNumber) {
   try {
-    const copyTitle = `Leads_${userNumber}`;
-    const copiedFile = await drive.files.copy({
-      fileId: TEMPLATE_SHEET_ID,
-      requestBody: { name: copyTitle },
+    const sheet = await sheets.spreadsheets.create({
+      resource: {
+        properties: { title: `LeadSheet_${userNumber}` },
+      },
+      fields: "spreadsheetId",
     });
 
-    const fileId = copiedFile.data.id;
+    const sheetId = sheet.data.spreadsheetId;
 
     // Make sheet readable by anyone with the link
     await drive.permissions.create({
-      fileId,
+      fileId: sheetId,
       requestBody: { role: "reader", type: "anyone" },
     });
 
-    const sheetLink = `https://docs.google.com/spreadsheets/d/${fileId}/edit`;
+    const sheetLink = `https://docs.google.com/spreadsheets/d/${sheetId}/edit`;
     console.log(`✅ Sheet created for ${userNumber}: ${sheetLink}`);
     return sheetLink;
   } catch (err) {
@@ -70,7 +67,7 @@ async function createNewSheet(userNumber) {
 
 async function sendWhatsAppReply(toNumber, message) {
   try {
-    const url = `https://graph.facebook.com/v23.0/${PHONE_NUMBER_ID}/messages`;
+    const url = `https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}/messages`;
     const data = {
       messaging_product: "whatsapp",
       to: toNumber,
@@ -123,7 +120,7 @@ app.post("/webhook", async (req, res) => {
 
         // Create Google Sheet and send link
         const sheetLink = await createNewSheet(from);
-        await sendWhatsAppReply(from, `Hi! Your lead sheet is ready: ${sheetLink}`);
+        await sendWhatsAppReply(from, `Hi 👋 Your lead sheet is ready: ${sheetLink}`);
       }
     }
     res.sendStatus(200);
