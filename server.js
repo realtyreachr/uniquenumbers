@@ -38,7 +38,7 @@ async function createNewSheet(userNumber) {
 }
 
 async function sendWhatsAppReply(toNumber, message) {
-  const url = `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`;
+  const url = `https://graph.facebook.com/v18.0/782266531631708/messages`;
   const data = {
     messaging_product: "whatsapp",
     to: toNumber,
@@ -93,6 +93,7 @@ app.post("/webhook", async (req, res) => {
 // START SERVER
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
 
