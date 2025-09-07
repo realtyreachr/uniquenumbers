@@ -58,6 +58,9 @@ async function sendWhatsAppReply(toNumber, message) {
 import express from "express";
 import bodyParser from "body-parser";
 
+const app = express();
+app.use(bodyParser.json());
+
 // ✅ Webhook Verify (required by Meta)
 app.get("/webhook", (req, res) => {
   const verify_token = "RealtyReach@2025"; // tumne jo Meta dashboard me dala tha
@@ -106,6 +109,7 @@ app.listen(PORT, () => {
 // START SERVER
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
 
