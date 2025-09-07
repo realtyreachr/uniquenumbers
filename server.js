@@ -55,6 +55,8 @@ async function sendWhatsAppReply(toNumber, message) {
     body: JSON.stringify(data),
   });
 }
+import express from "express";
+import bodyParser from "body-parser";
 
 // ✅ Webhook Verify (required by Meta)
 app.get("/webhook", (req, res) => {
@@ -104,6 +106,7 @@ app.listen(PORT, () => {
 // START SERVER
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
 
