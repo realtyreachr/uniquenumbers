@@ -16,13 +16,17 @@ const TEMPLATE_SHEET_ID = "103pEGY7WjmIVDaV38-24_3wcMXFkcisTaf-41aTTm6g";
 let googleAuth;
 
 if (process.env.GOOGLE_SERVICE_ACCOUNT_BASE64) {
-  const json = Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_BASE64, 'base64').toString('utf-8');
+  const json = Buffer.from(
+    process.env.GOOGLE_SERVICE_ACCOUNT_BASE64,
+    "base64"
+  ).toString("utf-8");
+
   googleAuth = new google.auth.GoogleAuth({
     credentials: JSON.parse(json),
     scopes: ["https://www.googleapis.com/auth/drive"],
   });
 } else {
-  throw new Error("Missing GOOGLE_SERVICE_ACCOUNT_BASE64 environment variable");
+  throw new Error("❌ Missing GOOGLE_SERVICE_ACCOUNT_BASE64 environment variable");
 }
 
 const drive = google.drive({ version: "v3", auth: googleAuth });
@@ -33,7 +37,7 @@ const drive = google.drive({ version: "v3", auth: googleAuth });
     await googleAuth.getClient();
     console.log("✅ Google Drive Authenticated");
   } catch (error) {
-    console.error("❌ Google Drive Auth Error:", error);
+    console.error("❌ Google Drive Auth Error:", error.message);
     process.exit(1);
   }
 })();
@@ -41,7 +45,7 @@ const drive = google.drive({ version: "v3", auth: googleAuth });
 // ================== FUNCTIONS ====================
 async function createNewSheet(userNumber) {
   try {
-    const copyTitle = Leads_${userNumber};
+    const copyTitle = `Leads_${userNumber}`;
     const copiedFile = await drive.files.copy({
       fileId: TEMPLATE_SHEET_ID,
       requestBody: { name: copyTitle },
@@ -55,18 +59,18 @@ async function createNewSheet(userNumber) {
       requestBody: { role: "reader", type: "anyone" },
     });
 
-    const sheetLink = https://docs.google.com/spreadsheets/d/${fileId}/edit;
-    console.log(✅ Sheet created for ${userNumber}: ${sheetLink});
+    const sheetLink = `https://docs.google.com/spreadsheets/d/${fileId}/edit`;
+    console.log(`✅ Sheet created for ${userNumber}: ${sheetLink}`);
     return sheetLink;
   } catch (err) {
-    console.error(❌ Error creating sheet for ${userNumber}:, err.message);
+    console.error(`❌ Error creating sheet for ${userNumber}:`, err.message);
     throw err;
   }
 }
 
 async function sendWhatsAppReply(toNumber, message) {
   try {
-    const url = https://graph.facebook.com/v23.0/${PHONE_NUMBER_ID}/messages;
+    const url = `https://graph.facebook.com/v23.0/${PHONE_NUMBER_ID}/messages`;
     const data = {
       messaging_product: "whatsapp",
       to: toNumber,
@@ -77,16 +81,16 @@ async function sendWhatsAppReply(toNumber, message) {
     const res = await fetch(url, {
       method: "POST",
       headers: {
-        "Authorization": Bearer ${WHATSAPP_TOKEN},
+        Authorization: `Bearer ${WHATSAPP_TOKEN}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
 
     const result = await res.json();
-    console.log(📤 WhatsApp reply sent to ${toNumber}:, result);
+    console.log(`📤 WhatsApp reply sent to ${toNumber}:`, result);
   } catch (err) {
-    console.error(❌ Error sending WhatsApp message to ${toNumber}:, err.message);
+    console.error(`❌ Error sending WhatsApp message to ${toNumber}:`, err.message);
   }
 }
 
@@ -115,11 +119,11 @@ app.post("/webhook", async (req, res) => {
         const msg = changes[0].value.messages[0];
         const from = msg.from;
         const text = msg.text?.body;
-        console.log(📩 New message from ${from}: ${text});
+        console.log(`📩 New message from ${from}: ${text}`);
 
         // Create Google Sheet and send link
         const sheetLink = await createNewSheet(from);
-        await sendWhatsAppReply(from, Hi! Your lead sheet is ready: ${sheetLink});
+        await sendWhatsAppReply(from, `Hi! Your lead sheet is ready: ${sheetLink}`);
       }
     }
     res.sendStatus(200);
@@ -131,4 +135,4 @@ app.post("/webhook", async (req, res) => {
 
 // ================= START SERVER ===================
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(🚀 Server running on port ${PORT}));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
