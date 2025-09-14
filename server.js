@@ -130,6 +130,9 @@ app.post("/webhook", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.send("Server is running. Use /test-google-permissions to test Google API.");
+});
 app.get("/test-google-permissions", async (req, res) => {
   try {
     const client = await googleAuth.getClient();
@@ -159,4 +162,5 @@ app.get("/test-google-permissions", async (req, res) => {
 // ================= START SERVER ===================
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
 
