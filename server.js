@@ -130,6 +130,33 @@ app.post("/webhook", async (req, res) => {
   }
 });
 
+app.get("/test-google-permissions", async (req, res) => {
+  try {
+    const client = await googleAuth.getClient();
+    const driveTest = await drive.about.get({ fields: 'user, storageQuota' });
+    const testSheet = await sheets.spreadsheets.create({
+      resource: { properties: { title: "Permission_Test_Sheet" } }
+    });
+    await drive.permissions.create({
+      fileId: testSheet.data.spreadsheetId,
+      requestBody: { role: "reader", type: "anyone" }
+    });
+    res.json({
+      success: true,
+      message: "All Google permissions working!",
+      testSheetId: testSheet.data.spreadsheetId
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      error: error.message,
+      details: error.errors || []
+    });
+  }
+});
+
+
 // ================= START SERVER ===================
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
