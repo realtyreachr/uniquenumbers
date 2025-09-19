@@ -70,7 +70,7 @@ function generateAutoReply(userMessage, userNumber) {
 // Function to send WhatsApp messages
 async function sendWhatsAppReply(toNumber, message) {
   try {
-    const url = `https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}/messages`;
+    const url = `https://graph.facebook.com/v23.0/${PHONE_NUMBER_ID}/messages`;
     const data = {
       messaging_product: "whatsapp",
       to: toNumber,
@@ -352,3 +352,4 @@ process.on('SIGINT', () => {
 });
 
 export default app;
+
