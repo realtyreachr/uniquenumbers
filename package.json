@@ -1,15 +1,25 @@
 {
-  "name": "whatsapp-auto-reply",
+  "name": "whatsapp-auto-reply-bot",
   "version": "1.0.0",
-  "main": "server.js",
+  "description": "Simple WhatsApp Cloud API Auto Reply Bot",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "dependencies": {
     "express": "^4.18.2",
     "body-parser": "^1.20.2",
-    "node-fetch": "^3.3.2",
-    "googleapis": "^121.0.0"
-  }
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["whatsapp", "api", "automation"],
+  "author": "Your Name",
+  "license": "MIT"
 }
